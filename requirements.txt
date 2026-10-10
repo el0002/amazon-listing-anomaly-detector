@@ -1,0 +1,6 @@
+pandas
+duckdb
+kagglehub
+rapidfuzz
+jupyter
+matplotlib
