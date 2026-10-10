@@ -11,7 +11,8 @@ The core story of this project is **AI-assisted analysis with human validation**
 - No seller or brand column: brand is derived from titles.
 - Confirmed: 1,426,337 products and 248 categories; columns match the list above (version 17, files dated 2024-02-17).
 - Zero values, per the dataset description (decision D5 in `reports/decisions.md`): `stars = 0` means no ratings found; `reviews = 0` means no reviews found; `price = 0` means price unavailable; `listPrice` is the original price before discount, and `listPrice = 0` means no discount (price is the selling price).
-- `boughtInLastMonth` is bucketed (0, 50, 100…, 100000), and its origin is under review (Q2 in `reports/decisions.md`).
+- `boughtInLastMonth` is Amazon's own estimate of units sold in the past month, bucketed (0, 50, 100…, 100000); treat each value as the bottom of its bucket (D7).
+- Time context (D7): scraped Sep 2023, so sales reflect Aug–Sep 2023. Back-to-school season and Labor Day (Sep 4, 2023) deals fall inside that window; Prime Day (mid-July 2023) and Prime Big Deal Days (Oct 10–11, 2023) fall outside it. Seasonal demand or deals can look like anomalies, which is one reason to benchmark within category.
 - `reviews = 0` comes per category: 170 of 248 categories have 0 reviews on every rated listing. Don't treat review counts as comparable across categories.
 - Single snapshot: anomalies are relative to category, not over time.
 - Raw data lives in `data/raw/` and is never committed or modified.
@@ -31,7 +32,7 @@ The core story of this project is **AI-assisted analysis with human validation**
 ## Working rules
 - **Log AI decisions.** Whenever you write non-trivial logic (a cleaning rule, threshold, regex, join, or matching method), add an entry to `reports/ai_validation_log.md` using the table format there. State what you assumed and how it can be checked.
 - **Log human decisions.** When Adri decides a judgment call, record it in `reports/decisions.md` (question, options, decision, why, where applied). Add new judgment calls to its "Open questions" table with the evidence, and move them up once decided. Small defaults you choose without asking also go in, marked "AI default".
-- **`reports/my_analysis.md` is Adri's own analysis.** Don't edit it unless asked.
+- **`reports/my_analysis.md` is Adri's own analysis.** When Adri replies in the session with their own analysis or definitions, add them to that file in Adri's words (dated), and fix any reference line they contradict. Don't add your own analysis there.
 - **Show your checks.** After any transformation, print row counts before and after. When SQL and Python compute the same figure, reconcile them and report any difference.
 - **Flag uncertainty instead of guessing.** If a threshold, definition, or schema detail is a judgment call, propose options with trade-offs and ask me. Don't pick silently.
 - **Never fabricate results.** Numbers in reports and the README must come from code that was actually run. Never fill in hand labels or precision checks yourself; those are mine to do. Prepare the samples for me.
