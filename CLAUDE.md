@@ -9,7 +9,10 @@ The core story of this project is **AI-assisted analysis with human validation**
 - Source: Kaggle `asaniczka/amazon-products-dataset-2023-1-4m-products` (scraped Sep 2023), downloaded with `kagglehub`.
 - Expected files: `amazon_products.csv` (asin, title, imgUrl, productURL, stars, reviews, price, listPrice, category_id, isBestSeller, boughtInLastMonth) and `amazon_categories.csv` (id, category_name). Confirm the real schema before relying on it.
 - No seller or brand column: brand is derived from titles.
-- `listPrice = 0` likely means "no list price," not a 100% discount.
+- Confirmed: 1,426,337 products and 248 categories; columns match the list above (version 17, files dated 2024-02-17).
+- Zero values, per the dataset description (decision D5 in `reports/decisions.md`): `stars = 0` means no ratings found; `reviews = 0` means no reviews found; `price = 0` means price unavailable; `listPrice` is the original price before discount, and `listPrice = 0` means no discount (price is the selling price).
+- `boughtInLastMonth` is bucketed (0, 50, 100…, 100000), and its origin is under review (Q2 in `reports/decisions.md`).
+- `reviews = 0` comes per category: 170 of 248 categories have 0 reviews on every rated listing. Don't treat review counts as comparable across categories.
 - Single snapshot: anomalies are relative to category, not over time.
 - Raw data lives in `data/raw/` and is never committed or modified.
 
