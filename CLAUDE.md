@@ -33,6 +33,8 @@ The core story of this project is **AI-assisted analysis with human validation**
 - **Log AI decisions.** Whenever you write non-trivial logic (a cleaning rule, threshold, regex, join, or matching method), add an entry to `reports/ai_validation_log.md` using the table format there. State what you assumed and how it can be checked.
 - **Log human decisions.** When Adri decides a judgment call, record it in `reports/decisions.md` (question, options, decision, why, where applied). Add new judgment calls to its "Open questions" table with the evidence, and move them up once decided. Small defaults you choose without asking also go in, marked "AI default".
 - **`reports/my_analysis.md` is Adri's own analysis.** When Adri replies in the session with their own analysis or definitions, add them to that file in Adri's words (dated), and fix any reference line they contradict. Don't add your own analysis there.
+- **Read `reports/decisions.md` before writing any logic.** Decisions there override the plan in this file where they differ (e.g. which quality rules reject rows: D9).
+- **End of session:** update the Status section below, then commit.
 - **Show your checks.** After any transformation, print row counts before and after. When SQL and Python compute the same figure, reconcile them and report any difference.
 - **Flag uncertainty instead of guessing.** If a threshold, definition, or schema detail is a judgment call, propose options with trade-offs and ask me. Don't pick silently.
 - **Never fabricate results.** Numbers in reports and the README must come from code that was actually run. Never fill in hand labels or precision checks yourself; those are mine to do. Prepare the samples for me.
@@ -46,6 +48,25 @@ The core story of this project is **AI-assisted analysis with human validation**
 - Day 2: brand extraction and accuracy, category baselines, anomaly signals.
 - Day 3: precision check, summary exports, dashboard, README, `findings.md`.
 If time runs short, cut near-duplicate titles first.
+
+## Status
+*Last updated: 2026-10-11, end of setup session (Day 0).*
+
+**Done**
+- Scaffold, venv (Python 3.11.9, pinned `requirements.txt`), git repo.
+- Data downloaded with kagglehub (no login needed) and copied to `data/raw/`. `src/load.py` loads both files with explicit dtypes; profiled and reconciled against DuckDB (8 of 8 counts match).
+- Decisions D1–D15 recorded in `reports/decisions.md`; no open questions.
+- Title override for B00758A9CE in `overrides/title_overrides.csv`, confirmed by Adri (D13).
+- `reports/ai_validation_log.md`: 3 entries (1 real caught AI error, #2).
+
+**Next: Day 1**
+1. `src/download.py`: kagglehub download + copy to `data/raw/`, so a fresh clone can get the data (only done by hand so far).
+2. `src/quality_rules.py`: implement rules with the severities in D9; apply `overrides/title_overrides.csv` first; save rejected rows with the rule name to `outputs/`.
+3. Same rules as SQL in `sql/`, run with DuckDB; reconcile counts with Python.
+4. Write `reports/data_quality.md` (rows and % per rule, rejected vs counted, reconciliation).
+5. Log the AI decisions in `ai_validation_log.md`; update this Status; commit.
+
+Expected counts from profiling (re-check, don't copy): price > listPrice 451; zero price 32,772; zero listPrice 1,080,503; stars without reviews 999,480; missing title 1 before override, 0 after; duplicate ASIN 0; unknown category 0.
 
 ## Definition of done
 - Fresh clone + `pip install -r requirements.txt` runs the pipeline end to end.
