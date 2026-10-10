@@ -72,4 +72,21 @@ df, cat = load_products(), load_categories()
 
 ### Things that don't look right
 
+*2026-10-10*
+
+- Price above the list price: remove, since it breaks the logic (list price is the price before the discount).
+- Missing title: use the ASIN to find the product title. If there's no ASIN or title, remove the product, since we have no idea what it is.
+
+*2026-10-11*
+
+- Checked the 2023 image for B00758A9CE: it is a brush, so the recovered title is right.
+
 ### Ideas for anomaly signals
+
+*2026-10-10*
+
+- Products that don't have a discount still mean something.
+
+*2026-10-11*
+
+- For "discount far above the category norm", don't include the 0% discounts, only the ones above 0. It's fair that way.
