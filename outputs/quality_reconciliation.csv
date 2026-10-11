@@ -1,0 +1,8 @@
+rule,action_py,rows_failed_py,pct_of_rows_py,rows_failed_in_kept_py,action_sql,rows_failed_sql,pct_of_rows_sql,rows_failed_in_kept_sql,action_match,rows_failed_diff,pct_of_rows_diff,rows_failed_in_kept_diff,match
+duplicate_asin,reject,0,0.0,0,reject,0,0.0,0,True,0,0.0,0,True
+missing_title,reject,2,0.0001,0,reject,2,0.0001,0,True,0,0.0,0,True
+price_above_list_price,reject,451,0.0316,0,reject,451,0.0316,0,True,0,0.0,0,True
+stars_without_reviews,count,999480,70.0732,999133,count,999480,70.0732,999133,True,0,0.0,0,True
+unknown_category_id,reject,0,0.0,0,reject,0,0.0,0,True,0,0.0,0,True
+zero_list_price,count,1080503,75.7537,1080502,count,1080503,75.7537,1080502,True,0,0.0,0,True
+zero_price,count,32772,2.2976,32771,count,32772,2.2976,32771,True,0,0.0,0,True

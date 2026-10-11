@@ -1,0 +1,8 @@
+rule,action,rows_failed,pct_of_rows,rows_failed_in_kept,description
+missing_title,reject,2,0.0001,0,"Title empty, ""NULL"", no letters or digits, or 1 character, after confirmed overrides (D1, D16-D18)"
+price_above_list_price,reject,451,0.0316,0,price > listPrice where listPrice > 0 (D9)
+duplicate_asin,reject,0,0.0,0,ASIN appears more than once (D9)
+unknown_category_id,reject,0,0.0,0,category_id not in amazon_categories.csv (D9)
+zero_price,count,32772,2.2976,32771,"price = 0: price unavailable (D5, D9)"
+zero_list_price,count,1080503,75.7537,1080502,"listPrice = 0: no discount (D5, D9)"
+stars_without_reviews,count,999480,70.0732,999133,"stars > 0 and reviews = 0 (D5, D9)"
