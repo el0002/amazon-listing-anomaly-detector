@@ -50,23 +50,27 @@ The core story of this project is **AI-assisted analysis with human validation**
 If time runs short, cut near-duplicate titles first.
 
 ## Status
-*Last updated: 2026-10-11, end of setup session (Day 0).*
+*Last updated: 2026-10-12, end of Day 1.*
 
 **Done**
-- Scaffold, venv (Python 3.11.9, pinned `requirements.txt`), git repo.
-- Data downloaded with kagglehub (no login needed) and copied to `data/raw/`. `src/load.py` loads both files with explicit dtypes; profiled and reconciled against DuckDB (8 of 8 counts match).
-- Decisions D1–D15 recorded in `reports/decisions.md`; no open questions.
-- Title override for B00758A9CE in `overrides/title_overrides.csv`, confirmed by Adri (D13).
-- `reports/ai_validation_log.md`: 3 entries (1 real caught AI error, #2).
+- Day 0: scaffold, venv (Python 3.11.9, pinned `requirements.txt`), git repo; `src/load.py` with explicit dtypes, profiled and reconciled against DuckDB (8 of 8 counts match).
+- `src/download.py`: kagglehub download of the latest version (D19; latest = version 17 on 2026-10-12), copied to `data/raw/`; stops on a header change, warns on a row-count change. Tested on `data/raw/` and an empty folder; the network download itself is untested (kagglehub used its cache).
+- `src/quality_rules.py`: 7 rules on all raw rows (D20), after title overrides (D18, D21, D23: confirmed + similarity >= 95). **453 rejected** (451 `price_above_list_price`, 2 `missing_title`), **1,425,884 kept**. Counted, kept: `zero_price` 32,772, `zero_list_price` 1,080,503, `stars_without_reviews` 999,480. Outputs: `outputs/rejected_rows.csv`, `quality_rule_counts.csv`, `overrides_needing_confirmation.csv` (empty). `clean_products()` returns the kept rows.
+- `sql/quality_rules.sql` + `src/reconcile_quality.py`: SQL matches Python on 7 of 7 rule counts, the exact 453 rejected ASINs, and 3 of 3 override statuses (`outputs/quality_reconciliation.csv`).
+- Missing titles widened by D16 (5 found): 3 recovered from Amazon and confirmed (B00758A9CE D13; B00IKIEKS2, B01HEJ3V9G D22); B08FM4JTW2 rejected (D17); B09314JYMX rejected (404, no archive).
+- `reports/data_quality.md` written. Decisions D1-D24; no open questions.
+- `reports/ai_validation_log.md`: 8 entries; real caught errors in #2, #6, #7, #8 (the Day 1 ones were caught by AI self-review, not by Adri).
 
-**Next: Day 1**
-1. `src/download.py`: kagglehub download + copy to `data/raw/`, so a fresh clone can get the data (only done by hand so far).
-2. `src/quality_rules.py`: implement rules with the severities in D9; apply `overrides/title_overrides.csv` first; save rejected rows with the rule name to `outputs/`.
-3. Same rules as SQL in `sql/`, run with DuckDB; reconcile counts with Python.
-4. Write `reports/data_quality.md` (rows and % per rule, rejected vs counted, reconciliation).
-5. Log the AI decisions in `ai_validation_log.md`; update this Status; commit.
+- Committed to the project repo (`main`, no remote yet). `outputs/` files are committed, `rejected_rows.csv` included (D24).
 
-Expected counts from profiling (re-check, don't copy): price > listPrice 451; zero price 32,772; zero listPrice 1,080,503; stars without reviews 999,480; missing title 1 before override, 0 after; duplicate ASIN 0; unknown category 0.
+**Next: Day 2**
+1. Brand extraction (`src/brand.py`): measure accuracy on `labels/brand_labels.csv` before and after every change. 16 titles contain U+FFFD and may lose their brand.
+2. Category baselines on the kept rows (`clean_products()`); leave `zero_price` rows out of price and discount signals (D9).
+3. Anomaly signals in `src/anomalies.py`: low price vs category median; discount far above norm (D6, D14, D15: z-score among discounted listings, tiers z > 3 and 2 < z <= 3); near-duplicate titles (cut first if short on time); high sales with few reviews (D11, with a column marking whether the category has review data).
+4. Open AI default to confirm with Adri: D15 skips categories with fewer than 30 discounted listings.
+5. Log AI decisions; update this Status; commit.
+
+Expected counts from Day 0 profiling, taken on all rows; re-check them on the kept rows, don't copy: 345,106 discounted listings across 247 categories (D14); 3,291 high-tier discount listings in the 236 categories with 30+ discounted listings (D15); 37,702 high-sales/few-reviews candidates, 32,099 in categories with no review data (D11).
 
 ## Definition of done
 - Fresh clone + `pip install -r requirements.txt` runs the pipeline end to end.
