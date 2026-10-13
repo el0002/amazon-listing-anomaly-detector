@@ -70,6 +70,13 @@ df, cat = load_products(), load_categories()
 
 ### What I found
 
+*2026-10-13*
+
+- Brand labels: I checked the listings on Amazon and added tags in `labels/brand_labels.csv`:
+  - `DIFF_PRODUCT`: different product came up upon checking
+  - `LISTING_UNAVAILABLE`: no longer available
+  - `ASIN_INVALID`: asin is not amazon standard
+
 ### Things that don't look right
 
 *2026-10-10*

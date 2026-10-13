@@ -1,0 +1,6 @@
+signal,tier,listings,categories,in_categories_with_review_data
+high_discount,high,3291,224,1249
+high_discount,medium,13629,235,5224
+low_price,high,2369,175,752
+near_duplicate_title,high,49805,230,37566
+sales_review_mismatch,high,15858,203,3798

@@ -83,6 +83,10 @@ SELECT asin,
 FROM rule_flags
 WHERE missing_title OR price_above_list_price OR duplicate_asin OR unknown_category_id;
 
+-- Rows no rule rejects: the same rows as clean_products() in src/quality_rules.py.
+CREATE OR REPLACE VIEW kept AS
+SELECT p.* FROM products p ANTI JOIN rejected r USING (asin);
+
 -- Rows failed and % of all raw rows per rule, plus how many of them are kept.
 CREATE OR REPLACE VIEW rule_counts AS
 WITH f AS (
